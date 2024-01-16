@@ -6,19 +6,20 @@ Currently supports up/down/north/south/west/east directions.
 
 The map created is 2D, and room 1 is set as coordinate 0,0,0. Maps on different levels on the Z-axis are superimposed one on top of the other, but slightly offset diagonally, and differently colored.
 
-usage: map\_parser\_2d.py [-h] [--map_file MAP_FILE] [--output\_file OUTPUT\_FILE]
+```
+usage: map_parser_2d.py [-h] [--map_file MAP_FILE] [--output_file OUTPUT_FILE]
                         [--no_nums | --no-no_nums | -n]
 
 options:
-  --map\_file MAP\_FILE, -m MAP\_FILE
-  --output\_file OUTPUT\_FILE, -o OUTPUT\_FILE
+  --map_file MAP_FILE, -m MAP_FILE
+  --output_file OUTPUT_FILE, -o OUTPUT_FILE
     # if none is provided, the map will be saved as 'map.png'
-  --no\_nums, --no-no\_nums, -n
+  --no_nums, --no-no_nums, -n
     # Only add room names to the map, not vnums
-
+```
 Example:
 ```
-$ python3 ./map\_parser\_2d.py -m arctic\_map  -n -o arctic.png
+$ python3 ./map_parser_2d.py -m arctic_map  -n -o arctic.png
 Unconnected rooms:
 []
 Plotting connections

@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import argparse
 
 parser = argparse.ArgumentParser(description='Visualize a tintin++ map file')
+parser.add_argument("--canvas_size", '-c', type=int)
 parser.add_argument("--map_file", '-m')
 parser.add_argument("--output_file", '-o')
 parser.add_argument("--no_nums", '-n', action=argparse.BooleanOptionalAction)
@@ -13,6 +14,11 @@ parser.add_argument("--no_nums", '-n', action=argparse.BooleanOptionalAction)
 args = parser.parse_args()
 
 map_file = args.map_file
+
+if args.canvas_size is None:
+    canvas_size = 75
+else:
+    canvas_size = args.canvas_size
 
 if args.output_file is None:
     output_file = "map.png"
@@ -134,7 +140,7 @@ print(skipped)
 
 fig = plt
 fig.figure(0)
-fig.figure(figsize=(75, 75))
+fig.figure(figsize=(canvas_size, canvas_size))
 
 print("Plotting connections")
 for con in mp.connections:

@@ -1,5 +1,6 @@
 import re
 import os
+import sys
 import pickle
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -8,7 +9,9 @@ import argparse
 parser = argparse.ArgumentParser(description='Visualize a tintin++ map file')
 parser.add_argument("--canvas_size", '-c', type=int)
 parser.add_argument("--map_file", '-m')
+parser.add_argument("--fast", '-f', action=argparse.BooleanOptionalAction)
 parser.add_argument("--output_file", '-o')
+parser.add_argument("--unconnected_only", '-u', action=argparse.BooleanOptionalAction)
 parser.add_argument("--no_nums", '-n', action=argparse.BooleanOptionalAction)
 
 args = parser.parse_args()
@@ -25,7 +28,6 @@ if args.output_file is None:
 else:
     output_file = args.output_file
 
-mpl.use('Agg')
 
 class Map:
     def __init__(self):
@@ -136,7 +138,12 @@ while True:
         print("Unconnected rooms: %5d" % (last_skip) , end ="\r")
 
 print("Unconnected rooms:      ")
-print(skipped)
+print(sorted(list(set(skipped))))
+
+if args.unconnected_only:
+    sys.exit(0)
+
+mpl.use('Agg')
 
 fig = plt
 fig.figure(0)
@@ -161,16 +168,22 @@ for con in mp.connections:
     x2d_, y2d_ = conv_3d_2d(x_, y_, z_)
     fig.plot([x2d, x2d_], [y2d, y2d_], color)
 
-print("Plotting rooms")
-for room in mp.x.keys():
-    if room not in mp.invis:
-        x_, y_ = conv_3d_2d(mp.x[room], mp.y[room], mp.z[room])
-        fig.scatter(x_, y_, s=15, c='k')
+dot_size = (1000 / canvas_size)
 
-print("Adding room names")
-for room in mp.names.keys():
-    if room not in mp.invis:
-        x_, y_ = conv_3d_2d(mp.x[room], mp.y[room], mp.z[room])
-        fig.text(x_, y_, mp.names[room])
+if not args.fast:
+    print("Plotting rooms")
+    for room in mp.x.keys():
+        if room not in mp.invis:
+            x_, y_ = conv_3d_2d(mp.x[room], mp.y[room], mp.z[room])
+            fig.scatter(x_, y_, s=dot_size, c='k')
 
-fig.savefig(output_file)
+if not args.fast:
+    print("Adding room names")
+    for room in mp.names.keys():
+    #    if room not in mp.invis:
+            x_, y_ = conv_3d_2d(mp.x[room], mp.y[room], mp.z[room])
+            fig.text(x_, y_, mp.names[room])
+
+fig.axis('off')
+fig.savefig(output_file, bbox_inches='tight')
+
